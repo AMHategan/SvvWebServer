@@ -1,13 +1,12 @@
 package handling;
 
-import java.io.BufferedReader;
+import java.io.BufferedReader; 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
 import exception.InvalidRequestException;
 import parsers.RequestParser;
-import webserver.Channel;
 import webserver.Request;
 
 public class RequestHandling {
@@ -49,7 +48,4 @@ public class RequestHandling {
         this.newRequest = new Request(parser.getMethod(),parser.getResource(),parser.getHost(),parser.getHTTP());
     }
 
-	public static Request getRequest(Channel communicationChannel) {
-		return null;
-	}
 }
