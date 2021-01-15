@@ -1,12 +1,17 @@
 package webserver;
 
-import java.net.*; 
+import java.net.*;
+
+import exception.InvalidRequestException;
+import exception.InvalidRootDirException;
+
 import java.io.*;
 
+import handling.*;
 
 public class WebServer extends Thread {
 	protected Socket clientSocket;
-	private WebServerUtils utils = new WebServerUtils();
+	protected int state;
 
 
 	private WebServer(Socket clientSoc) {
@@ -15,11 +20,11 @@ public class WebServer extends Thread {
 	}
 
 
-	public static void main(String[] args) throws IOException {
+	public static void runWebServer(int port) throws IOException {
 		ServerSocket serverSocket = null;
 
 		try {
-			serverSocket = new ServerSocket(10008);
+			serverSocket = new ServerSocket(port);
 			System.out.println("Connection Socket Created");
 			try {
 				while (true) {
@@ -31,13 +36,13 @@ public class WebServer extends Thread {
 				System.exit(1);
 			}
 		} catch (IOException e) {
-			System.err.println("Could not listen on port: 10008.");
+			System.err.println("Could not listen on port: " + port);
 			System.exit(1);
 		} finally {
 			try {
 				serverSocket.close();
 			} catch (IOException e) {
-				System.err.println("Could not close port: 10008.");
+				System.err.println("Could not close port: " + port);
 				System.exit(1);
 			}
 		}
@@ -48,21 +53,35 @@ public class WebServer extends Thread {
 		System.out.println("New Communication Thread Started");
 
 		try {
-			OutputStream out = clientSocket.getOutputStream();
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(clientSocket.getInputStream()));
+			Channel communicationChannel = new Channel(this.clientSocket);
 
-			String request = utils.getRequest(in);
-			utils.sendResponse(out);
+			Request request = RequestHandling.getRequest(communicationChannel);
+			Response response = ResponseHandling.getResponse(request, WebServerState.getWebServerState());
 
-			out.close();
-			in.close();
-
-			this.clientSocket.close();
+			this.sendResponse(communicationChannel, response);
+			communicationChannel.close();
 
 		} catch (IOException e) {
 			System.err.println("Problem with Communication Server");
+			e.printStackTrace();
 			System.exit(1);
 		}
+		catch (InvalidRequestException e){
+			e.printStackTrace();
+		}
+		catch (InvalidRootDirException e){
+			e.printStackTrace();
+		}
+	}
+
+
+	public void sendResponse(Channel channel, Response response) throws IOException {
+		OutputStream out = channel.getWebServerEnd();
+		out.write(("HTTP/1.1"+ response.getMessage() + "\r\n").getBytes());
+		out.write(("ContentType: " + response.getContentType() + "\r\n").getBytes());
+		out.write("\r\n".getBytes());
+		out.write(response.getContent());
+		out.write("\r\n\r\n".getBytes());
+		out.flush();
 	}
 }

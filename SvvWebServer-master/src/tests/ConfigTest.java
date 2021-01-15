@@ -26,42 +26,36 @@ public class ConfigTest {
 	@Test
 	public void testLoadinfConfiguration1() throws FailedLoadingConfigurationException, IOException {
 		config = new Configuration("valid");
-		
 		config.loadConfiguration();
 	}
 	
 	@Test
 	public void testLoadinfConfiguration2() throws FailedLoadingConfigurationException, IOException {
 		config = new Configuration("valid");
-		
 		config.loadConfiguration();
 	}
 	
 	@Test(expected = FailedLoadingConfigurationException.class)
 	public void testInvalidLoadConfiguration1() throws FailedLoadingConfigurationException, IOException {
 		config = new Configuration("valid");
-		
 		config.loadConfiguration();
 	}
 	
 	@Test(expected = FailedLoadingConfigurationException.class)
 	public void testInvalidLoadConfiguration2() throws FailedLoadingConfigurationException, IOException {
 		config = new Configuration("valid");
-		
 		config.loadConfiguration();
 	}
 	
 	@Test(expected = FailedLoadingConfigurationException.class)
 	public void testInvalidLoadConfiguration3() throws FailedLoadingConfigurationException, IOException {
 		config = new Configuration("valid");
-		
 		config.loadConfiguration();
 	}
 	
 	@Test(expected = FailedSavingConfigurationException.class)
 	public void testInvalidSavingConfiguration() throws FailedSavingConfigurationException, FailedLoadingConfigurationException, IOException{
 		config = new Configuration("valid");
-		
 		config.saveConfiguration();
 	}
 	

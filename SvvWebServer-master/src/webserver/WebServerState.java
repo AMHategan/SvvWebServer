@@ -9,35 +9,30 @@ public class WebServerState {
     
      //0 stopped,1 running,2 maintenance
      
+    private static int webServerState=0;
 
-    private int webServerState;
-
-    public WebServerState(){
-        this.webServerState = 1;
+    public static int getWebServerState(){
+        return webServerState;
     }
 
-    public int getWebServerState(){
-        return this.webServerState;
-    }
-
-    public void startWebServer() throws RunningWebServerException {
-        if(this.webServerState == 1)
+    public static void startWebServer() throws RunningWebServerException {
+        if(webServerState == 1)
             throw new RunningWebServerException();
-        this.webServerState = 1;
+        webServerState = 1;
     }
 
 
-    public void stopWebServer() throws InactiveWebServerException {
-        if(this.webServerState == 0)
+    public static void stopWebServer() throws InactiveWebServerException {
+        if(webServerState == 0)
             throw new InactiveWebServerException();
-        this.webServerState = 0;
+        webServerState = 0;
     }
 
 
-    public void maintenanceWebServer() throws MaintenanceFailWebServerException {
-        if(this.webServerState != 1)
+    public static void maintenanceWebServer() throws MaintenanceFailWebServerException {
+        if(webServerState != 1)
             throw new MaintenanceFailWebServerException();
-        this.webServerState = 2;
+        webServerState = 2;
     }
 
 }
